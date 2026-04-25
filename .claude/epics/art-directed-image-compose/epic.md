@@ -1,11 +1,11 @@
 ---
 name: art-directed-image-compose
-status: in-progress
+status: completed
 created: 2026-04-25T10:29:29Z
-updated: 2026-04-25T10:29:29Z
-progress: 80%
+updated: 2026-04-25T10:41:56Z
+progress: 100%
 prd: .claude/prds/art-directed-image-compose.md
-github: (will be set on sync)
+github: https://github.com/daizhouchen/art-directed-image-compose-skill/issues/1
 ---
 
 # Epic: art-directed-image-compose
@@ -83,11 +83,11 @@ Initialize a git repository in `/home/zcdai/image`, snapshot the skill implement
 
 ## Tasks Created
 
-- [x] 001.md - Create CCPM planning artifacts (parallel: false)
-- [x] 002.md - Initialize skill scaffolding and metadata (parallel: false)
-- [x] 003.md - Implement image input helper scripts (parallel: true)
-- [x] 004.md - Encode art direction and prompt references (parallel: true)
-- [ ] 005.md - Validate, commit, and upload to GitHub (parallel: false)
+- [x] 2.md - Create CCPM planning artifacts (parallel: false)
+- [x] 3.md - Initialize skill scaffolding and metadata (parallel: false)
+- [x] 4.md - Implement image input helper scripts (parallel: true)
+- [x] 5.md - Encode art direction and prompt references (parallel: true)
+- [x] 6.md - Validate, commit, and upload to GitHub (parallel: false)
 
 Total tasks: 5
 Parallel tasks: 2
