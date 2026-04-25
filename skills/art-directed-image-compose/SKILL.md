@@ -1,6 +1,6 @@
 ---
 name: art-directed-image-compose
-description: Art-directed image composition from local reference photos with final gpt-image-2 generation. Use when Codex needs to take one or more local image paths, directories, or globs; extract visual elements; choose what to keep or discard; create a coherent design direction; avoid collage-like pileups; and generate a final polished raster design draft with the existing imagegen gpt-image-2 CLI.
+description: Art-directed image composition from local reference photos with default final generation through the built-in image_gen tool. Use when Codex needs to take one or more local image paths, directories, or globs; extract visual elements; choose what to keep or discard; create a coherent design direction; avoid collage-like pileups; and generate a final polished raster design draft without requiring OPENAI_API_KEY. Use the imagegen CLI only when the user explicitly requests gpt-image-2/API/model controls or file-path CLI execution.
 ---
 
 # Art Directed Image Compose
@@ -16,8 +16,8 @@ Turn local reference photos into a complete design draft by doing art direction 
 5. Assign every meaningful source element one role: `hero`, `support`, `motif`, or `discard`.
 6. Write 2-3 text-only design directions when the request is broad; select the strongest default if the user does not choose.
 7. Read `references/design-brief-template.md` to produce the final brief and prompt.
-8. Read `references/imagegen-gpt-image-2.md` before final generation.
-9. Generate the final image with the existing system imagegen CLI using `--model gpt-image-2`.
+8. Read `references/imagegen-generation.md` before final generation.
+9. Generate the final image with the built-in `image_gen` tool by default.
 10. Run the design QA checklist before reporting completion.
 
 ## Input Collection
@@ -38,7 +38,7 @@ python /home/zcdai/.codex/skills/art-directed-image-compose/scripts/make_contact
   --out tmp/art-directed-image-compose/contact-sheet.jpg
 ```
 
-If there are more than 16 source images, do not pass all originals into `gpt-image-2`. Use the manifest and contact sheet for analysis, then choose only the hero/support/motif images that materially affect the final design.
+If there are many source images, do not try to use all originals as final references. Use the manifest and contact sheet for analysis, then choose only the hero/support/motif images that materially affect the final design and inspect those originals with `view_image` before calling `image_gen`.
 
 ## Art Direction Rules
 
@@ -55,40 +55,32 @@ Use `references/art-direction-kernel.md` for the detailed design rubric.
 
 ## Generation Call Policy
 
-Default to one final `gpt-image-2` call. Do not spend image calls on analysis.
+Default to one final built-in `image_gen` call. Do not spend image calls on analysis.
 
 Allowed call budget:
 
-- Normal task: 1 final image call.
+- Normal task: 1 final built-in image call.
 - Complex commercial visual: optional 1 exploration call, 1 final call, and 1 targeted repair call.
 - More than that: explain what new information each extra call will produce before continuing.
 
-If `OPENAI_API_KEY` is missing, prepare the prompt and dry-run command but do not claim that a final `gpt-image-2` image was generated.
+Do not require `OPENAI_API_KEY` for the default built-in path. If the user explicitly requests CLI/API/model controls such as `gpt-image-2`, follow the fallback section in `references/imagegen-generation.md`; that path requires `OPENAI_API_KEY`.
 
-## Final GPT Image Command Shape
+## Final Image Generation
 
-Use `edit` with one or more selected image references when source fidelity matters:
+Built-in `image_gen` is the default final execution path:
 
-```bash
-python "${CODEX_HOME:-$HOME/.codex}/skills/.system/imagegen/scripts/image_gen.py" edit \
-  --model gpt-image-2 \
-  --image selected-reference-01.jpg \
-  --image selected-reference-02.jpg \
-  --prompt-file tmp/art-directed-image-compose/final-prompt.txt \
-  --quality high \
-  --size 1536x1024 \
-  --out output/art-directed-image-compose/final-design.png
-```
+1. Inspect selected local reference images with `view_image` so they are visible in conversation context.
+2. Call built-in `image_gen` with the final art-directed prompt.
+3. If the result is project-bound, move or copy the selected output from the default generated-images location into the workspace.
+4. Do not overwrite existing project assets unless the user explicitly asks.
 
-Use `generate` only when the photos were used purely for analysis and should not be direct image inputs.
-
-Never pass `--input-fidelity` with `gpt-image-2`. Never pass `--background transparent` with `gpt-image-2`. Do not silently switch to another image model.
+Use the CLI fallback only when the user explicitly requests `gpt-image-2`, CLI/API execution, explicit model/quality/size controls, or direct file-path image execution.
 
 ## Completion Report
 
 Report:
 
-- Final output path, or dry-run status if no API key was available.
+- Final output path for workspace-bound assets, or note that the image remained preview-only.
 - Input manifest path and contact sheet path when created.
 - Selected hero/support/motif/discard decisions.
 - Final prompt file path or final prompt text.
