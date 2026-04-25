@@ -1,0 +1,4 @@
+interface:
+  display_name: "Art Directed Image Compose"
+  short_description: "Compose references into polished designs"
+  default_prompt: "Use $art-directed-image-compose to turn my reference photo folder into a polished design draft."
